@@ -405,6 +405,35 @@
     font-size: 13px;
     color: var(--accent2);
     font-family: 'Space Mono', monospace;
+    margin-bottom: 16px;
+  }
+
+  .project-links { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 4px; }
+
+  .btn-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 16px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-family: 'Space Mono', monospace;
+    text-decoration: none;
+    letter-spacing: 0.04em;
+    transition: transform 0.2s, background 0.2s, border-color 0.2s;
+  }
+  .btn-link:hover { transform: translateY(-2px); }
+  .btn-link.github {
+    background: rgba(255,255,255,0.06);
+    border: 1px solid var(--border);
+    color: var(--text);
+  }
+  .btn-link.github:hover { border-color: var(--accent); background: rgba(124,58,237,0.1); }
+  .btn-link.coming {
+    background: transparent;
+    border: 1px dashed var(--border);
+    color: var(--muted);
+    pointer-events: none;
   }
 
   .project-visual {
@@ -708,6 +737,10 @@
           <div class="project-outcome">
             ✓ Reduced content production cycles by ~40% · Scalable across any Web3 client
           </div>
+          <div class="project-links">
+            <a href="https://github.com/ironjoku/ironjoku-portfolio" target="_blank" class="btn-link github">⌥ GitHub</a>
+            <span class="btn-link coming">⏳ Case Study — Coming Soon</span>
+          </div>
         </div>
         <div class="project-visual">
           <div class="terminal-line">
@@ -756,6 +789,10 @@
         <div class="project-outcome">
           ✓ Packaged as a sellable service · First AI product for Lagos market
         </div>
+        <div class="project-links">
+          <a href="https://github.com/ironjoku/ironjoku-portfolio" target="_blank" class="btn-link github">⌥ GitHub</a>
+          <span class="btn-link coming">⏳ Case Study — Coming Soon</span>
+        </div>
       </div>
 
       <!-- PROJECT 3 -->
@@ -774,6 +811,10 @@
         </div>
         <div class="project-outcome">
           ✓ Publication-ready reports delivered for each protocol analysed
+        </div>
+        <div class="project-links">
+          <a href="https://github.com/ironjoku/ironjoku-portfolio" target="_blank" class="btn-link github">⌥ GitHub</a>
+          <span class="btn-link coming">⏳ Case Study — Coming Soon</span>
         </div>
       </div>
 
@@ -876,7 +917,7 @@
           ↗ LinkedIn
         </a>
         <a href="/cdn-cgi/l/email-protection#fb928994959194908e979a8cbb9c969a9297d5989496" class="contact-chip">
-          ✉ ironjokulaw@gmail.com
+          ✉ <span class="__cf_email__" data-cfemail="81e8f3eeefebeeeaf4ede0f6c1e6ece0e8edafe2eeec">[email&#160;protected]</span>
         </a>
         <a href="https://x.com/unbr0kenog" target="_blank" class="contact-chip">
           𝕏 @unbr0kenog
@@ -894,7 +935,7 @@
   </footer>
 </div>
 
-<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
   // Intersection Observer for scroll animations
   const observer = new IntersectionObserver((entries) => {
     entries.forEach((entry, i) => {
@@ -905,11 +946,4 @@
         }, parseInt(delay));
       }
     });
-  }, { threshold: 0.1 });
-
-  document.querySelectorAll('.stat, .project-card, .skill-card, .timeline-item').forEach(el => {
-    observer.observe(el);
-  });
-
-  // Stagger skill cards
-  document.querySelectorAll('.skill-c
+  }, { threshold
