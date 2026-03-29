@@ -1,0 +1,915 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Iro-Njoku Lawrence — AI Prompt Engineer</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #080b12;
+    --surface: #0e1320;
+    --border: #1e2a40;
+    --accent: #7c3aed;
+    --accent2: #06d6a0;
+    --accent3: #f7b731;
+    --text: #e8eaf0;
+    --muted: #6b7a99;
+    --card: #111827;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 16px;
+    line-height: 1.7;
+    overflow-x: hidden;
+  }
+
+  /* GRID BACKGROUND */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(124,58,237,0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(124,58,237,0.04) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* NOISE TEXTURE */
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.4;
+  }
+
+  .container { max-width: 1100px; margin: 0 auto; padding: 0 32px; position: relative; z-index: 1; }
+
+  /* NAV */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    background: rgba(8,11,18,0.85);
+    backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--border);
+    padding: 0 32px;
+  }
+  .nav-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 64px;
+  }
+  .nav-logo {
+    font-family: 'Space Mono', monospace;
+    font-size: 13px;
+    color: var(--accent2);
+    letter-spacing: 0.08em;
+  }
+  .nav-links { display: flex; gap: 32px; }
+  .nav-links a {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--muted);
+    text-decoration: none;
+    letter-spacing: 0.04em;
+    transition: color 0.2s;
+  }
+  .nav-links a:hover { color: var(--text); }
+
+  /* HERO */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    padding-top: 64px;
+    position: relative;
+  }
+
+  .hero-glow {
+    position: absolute;
+    top: 20%;
+    left: -10%;
+    width: 600px;
+    height: 600px;
+    background: radial-gradient(ellipse, rgba(124,58,237,0.18) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .hero-glow2 {
+    position: absolute;
+    bottom: 10%;
+    right: -5%;
+    width: 400px;
+    height: 400px;
+    background: radial-gradient(ellipse, rgba(6,214,160,0.1) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(124,58,237,0.12);
+    border: 1px solid rgba(124,58,237,0.3);
+    border-radius: 100px;
+    padding: 6px 16px;
+    margin-bottom: 28px;
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    color: var(--accent);
+    letter-spacing: 0.1em;
+    animation: fadeUp 0.6s ease both;
+  }
+  .hero-badge::before {
+    content: '';
+    width: 6px; height: 6px;
+    background: var(--accent2);
+    border-radius: 50%;
+    animation: pulse 2s infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(1.4); }
+  }
+
+  .hero h1 {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(48px, 7vw, 88px);
+    font-weight: 800;
+    line-height: 1.0;
+    letter-spacing: -0.03em;
+    margin-bottom: 12px;
+    animation: fadeUp 0.6s 0.1s ease both;
+  }
+
+  .hero h1 .name-line {
+    display: block;
+    background: linear-gradient(135deg, #e8eaf0 0%, #a78bfa 50%, #06d6a0 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .hero-subtitle {
+    font-family: 'Space Mono', monospace;
+    font-size: 13px;
+    color: var(--accent3);
+    letter-spacing: 0.12em;
+    margin-bottom: 24px;
+    animation: fadeUp 0.6s 0.2s ease both;
+  }
+
+  .hero-desc {
+    font-size: 18px;
+    color: var(--muted);
+    max-width: 560px;
+    font-weight: 300;
+    margin-bottom: 40px;
+    animation: fadeUp 0.6s 0.3s ease both;
+    line-height: 1.8;
+  }
+
+  .hero-desc strong { color: var(--text); font-weight: 500; }
+
+  .hero-cta {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    animation: fadeUp 0.6s 0.4s ease both;
+  }
+
+  .btn-primary {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--accent);
+    color: white;
+    padding: 14px 28px;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 14px;
+    text-decoration: none;
+    transition: transform 0.2s, box-shadow 0.2s;
+    box-shadow: 0 0 30px rgba(124,58,237,0.3);
+  }
+  .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 0 40px rgba(124,58,237,0.5);
+  }
+
+  .btn-ghost {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: transparent;
+    color: var(--text);
+    padding: 14px 28px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    font-weight: 500;
+    font-size: 14px;
+    text-decoration: none;
+    transition: border-color 0.2s, background 0.2s;
+  }
+  .btn-ghost:hover { border-color: var(--accent); background: rgba(124,58,237,0.06); }
+
+  /* STAT STRIP */
+  .stats {
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    padding: 40px 0;
+    margin: 80px 0;
+  }
+  .stats-inner {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0;
+  }
+  .stat {
+    padding: 0 40px;
+    border-right: 1px solid var(--border);
+    text-align: center;
+    opacity: 1;
+    transform: translateY(0);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+  }
+  .stat:last-child { border-right: none; }
+  .stat.visible { opacity: 1; transform: translateY(0); }
+  .stat-num {
+    font-family: 'Syne', sans-serif;
+    font-size: 40px;
+    font-weight: 800;
+    color: var(--text);
+    line-height: 1;
+    margin-bottom: 6px;
+  }
+  .stat-num span { color: var(--accent2); }
+  .stat-label {
+    font-size: 12px;
+    color: var(--muted);
+    letter-spacing: 0.08em;
+    font-family: 'Space Mono', monospace;
+  }
+
+  /* SECTIONS */
+  section { padding: 100px 0; }
+  .section-tag {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    color: var(--accent2);
+    letter-spacing: 0.15em;
+    margin-bottom: 16px;
+    display: block;
+  }
+  .section-title {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(32px, 4vw, 48px);
+    font-weight: 800;
+    line-height: 1.1;
+    margin-bottom: 16px;
+    letter-spacing: -0.02em;
+  }
+  .section-desc {
+    font-size: 17px;
+    color: var(--muted);
+    max-width: 520px;
+    font-weight: 300;
+    margin-bottom: 60px;
+  }
+
+  /* PROJECTS */
+  .projects-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 24px;
+  }
+
+  .project-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 32px;
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.3s, border-color 0.3s, box-shadow 0.3s;
+    opacity: 1;
+    transform: translateY(0);
+  }
+  .project-card.visible {
+    opacity: 1;
+    transform: translateY(0);
+    transition: opacity 0.5s ease, transform 0.5s ease, border-color 0.3s, box-shadow 0.3s;
+  }
+  .project-card:hover {
+    border-color: var(--accent);
+    box-shadow: 0 0 40px rgba(124,58,237,0.15);
+    transform: translateY(-4px) !important;
+  }
+  .project-card.featured {
+    grid-column: span 2;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 32px;
+    align-items: center;
+  }
+
+  .project-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+  .project-card:hover::before { opacity: 1; }
+
+  .project-icon {
+    width: 48px; height: 48px;
+    background: rgba(124,58,237,0.15);
+    border: 1px solid rgba(124,58,237,0.3);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    margin-bottom: 20px;
+  }
+
+  .project-tag {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    color: var(--accent2);
+    letter-spacing: 0.12em;
+    margin-bottom: 12px;
+    display: block;
+  }
+
+  .project-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 22px;
+    font-weight: 700;
+    margin-bottom: 12px;
+    line-height: 1.2;
+  }
+
+  .project-desc {
+    font-size: 14px;
+    color: var(--muted);
+    line-height: 1.7;
+    margin-bottom: 20px;
+  }
+
+  .project-stack {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 24px;
+  }
+
+  .chip {
+    background: rgba(255,255,255,0.05);
+    border: 1px solid var(--border);
+    padding: 4px 12px;
+    border-radius: 100px;
+    font-size: 11px;
+    font-family: 'Space Mono', monospace;
+    color: var(--muted);
+    letter-spacing: 0.04em;
+  }
+  .chip.accent { border-color: rgba(124,58,237,0.4); color: #a78bfa; background: rgba(124,58,237,0.08); }
+  .chip.green { border-color: rgba(6,214,160,0.4); color: var(--accent2); background: rgba(6,214,160,0.08); }
+
+  .project-outcome {
+    background: rgba(6,214,160,0.06);
+    border: 1px solid rgba(6,214,160,0.2);
+    border-radius: 8px;
+    padding: 12px 16px;
+    font-size: 13px;
+    color: var(--accent2);
+    font-family: 'Space Mono', monospace;
+  }
+
+  .project-visual {
+    background: linear-gradient(135deg, rgba(124,58,237,0.1), rgba(6,214,160,0.05));
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 28px;
+    height: 100%;
+    min-height: 220px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    justify-content: center;
+  }
+
+  .terminal-line {
+    font-family: 'Space Mono', monospace;
+    font-size: 12px;
+    line-height: 1.8;
+  }
+  .terminal-line .prompt { color: var(--accent2); }
+  .terminal-line .cmd { color: #a78bfa; }
+  .terminal-line .out { color: var(--muted); }
+  .terminal-line .val { color: var(--accent3); }
+
+  /* SKILLS */
+  .skills-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+  }
+
+  .skill-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px;
+    opacity: 1;
+    transform: translateY(0);
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  .skill-card.visible { opacity: 1; transform: translateY(0); }
+  .skill-card:hover { border-color: rgba(124,58,237,0.4); }
+
+  .skill-icon { font-size: 28px; margin-bottom: 14px; }
+  .skill-name {
+    font-family: 'Syne', sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+  .skill-desc { font-size: 13px; color: var(--muted); line-height: 1.6; }
+
+  /* EXPERIENCE TIMELINE */
+  .timeline { position: relative; padding-left: 32px; }
+  .timeline::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 8px; bottom: 8px;
+    width: 1px;
+    background: linear-gradient(to bottom, var(--accent), var(--accent2), transparent);
+  }
+
+  .timeline-item {
+    position: relative;
+    margin-bottom: 48px;
+    opacity: 1;
+    transform: translateX(0);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+  }
+  .timeline-item.visible { opacity: 1; transform: translateX(0); }
+
+  .timeline-item::before {
+    content: '';
+    position: absolute;
+    left: -37px; top: 6px;
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    background: var(--accent);
+    border: 2px solid var(--bg);
+    box-shadow: 0 0 10px rgba(124,58,237,0.6);
+  }
+
+  .timeline-date {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    color: var(--accent2);
+    letter-spacing: 0.1em;
+    margin-bottom: 6px;
+  }
+  .timeline-role {
+    font-family: 'Syne', sans-serif;
+    font-size: 20px;
+    font-weight: 700;
+    margin-bottom: 4px;
+  }
+  .timeline-company {
+    font-size: 14px;
+    color: var(--accent);
+    font-weight: 500;
+    margin-bottom: 12px;
+  }
+  .timeline-points { list-style: none; }
+  .timeline-points li {
+    font-size: 14px;
+    color: var(--muted);
+    padding: 4px 0 4px 16px;
+    position: relative;
+    line-height: 1.6;
+  }
+  .timeline-points li::before {
+    content: '→';
+    position: absolute;
+    left: 0;
+    color: var(--accent2);
+    font-size: 12px;
+  }
+
+  /* CONTACT */
+  .contact-section {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 24px;
+    padding: 80px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .contact-section::before {
+    content: '';
+    position: absolute;
+    top: -60px; left: 50%;
+    transform: translateX(-50%);
+    width: 400px; height: 400px;
+    background: radial-gradient(ellipse, rgba(124,58,237,0.15) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .contact-title {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(28px, 4vw, 44px);
+    font-weight: 800;
+    margin-bottom: 16px;
+    line-height: 1.1;
+  }
+  .contact-sub {
+    font-size: 16px;
+    color: var(--muted);
+    margin-bottom: 40px;
+    font-weight: 300;
+  }
+  .contact-links {
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+
+  .contact-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid var(--border);
+    border-radius: 100px;
+    padding: 10px 20px;
+    font-size: 13px;
+    color: var(--text);
+    text-decoration: none;
+    transition: border-color 0.2s, background 0.2s;
+    font-family: 'Space Mono', monospace;
+  }
+  .contact-chip:hover { border-color: var(--accent); background: rgba(124,58,237,0.08); }
+
+  /* FOOTER */
+  footer {
+    padding: 40px 0;
+    border-top: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 0.06em;
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* SCROLLBAR */
+  ::-webkit-scrollbar { width: 4px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 2px; }
+
+  @media (max-width: 768px) {
+    .nav-links { display: none; }
+    .projects-grid { grid-template-columns: 1fr; }
+    .project-card.featured { grid-column: span 1; grid-template-columns: 1fr; }
+    .skills-grid { grid-template-columns: 1fr 1fr; }
+    .stats-inner { grid-template-columns: repeat(2, 1fr); gap: 20px; }
+    .stat { border-right: none; border-bottom: 1px solid var(--border); padding-bottom: 20px; }
+    .contact-section { padding: 40px 24px; }
+    .container { padding: 0 20px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-inner">
+    <span class="nav-logo">// UNBROKEN.DEV</span>
+    <div class="nav-links">
+      <a href="#projects">Projects</a>
+      <a href="#skills">Skills</a>
+      <a href="#experience">Experience</a>
+      <a href="#contact">Contact</a>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-glow"></div>
+  <div class="hero-glow2"></div>
+  <div class="container">
+    <div class="hero-badge">AVAILABLE FOR REMOTE ROLES</div>
+    <h1>
+      <span class="name-line">Iro-Njoku</span>
+      <span class="name-line">Lawrence</span>
+    </h1>
+    <p class="hero-subtitle">AI PROMPT ENGINEER · WORKFLOW ARCHITECT · WEB3 SPECIALIST</p>
+    <p class="hero-desc">
+      I build <strong>AI-powered systems</strong> that turn prompts into products —
+      from autonomous content pipelines to end-to-end marketing automation.
+      Based in <strong>Lagos, Nigeria.</strong> Working globally.
+    </p>
+    <div class="hero-cta">
+      <a href="#projects" class="btn-primary">
+        <span>↓</span> View My Work
+      </a>
+      <a href="#contact" class="btn-ghost">
+        <span>✉</span> Get in Touch
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- STATS -->
+<div class="container">
+  <div class="stats">
+    <div class="stats-inner">
+      <div class="stat" data-delay="0">
+        <div class="stat-num">4<span>+</span></div>
+        <div class="stat-label">YEARS IN WEB3</div>
+      </div>
+      <div class="stat" data-delay="100">
+        <div class="stat-num">9<span>+</span></div>
+        <div class="stat-label">PROTOCOLS RESEARCHED</div>
+      </div>
+      <div class="stat" data-delay="200">
+        <div class="stat-num">3<span>x</span></div>
+        <div class="stat-label">AI SYSTEMS SHIPPED</div>
+      </div>
+      <div class="stat" data-delay="300">
+        <div class="stat-num">25<span>%</span></div>
+        <div class="stat-label">WORKFLOW EFFICIENCY GAIN</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PROJECTS -->
+<section id="projects">
+  <div class="container">
+    <span class="section-tag">// SELECTED WORK</span>
+    <h2 class="section-title">AI Systems I've Built</h2>
+    <p class="section-desc">Real projects. Shipped and packaged for deployment.</p>
+
+    <div class="projects-grid">
+
+      <!-- FEATURED PROJECT -->
+      <div class="project-card featured">
+        <div>
+          <div class="project-icon">⛓</div>
+          <span class="project-tag">FEATURED PROJECT · WEB3</span>
+          <h3 class="project-title">Web3 Content Production System</h3>
+          <p class="project-desc">
+            A complete Claude-powered prompt architecture for blockchain clients. Built with chain-prompting workflows, persona protocols, quality control layers, and structured output formatting. Tested live using Base blockchain as a practice client — capable of producing publication-ready content at scale.
+          </p>
+          <div class="project-stack">
+            <span class="chip accent">Claude (Anthropic)</span>
+            <span class="chip accent">Chain Prompting</span>
+            <span class="chip green">Base Blockchain</span>
+            <span class="chip">Notion</span>
+            <span class="chip">Content SOPs</span>
+          </div>
+          <div class="project-outcome">
+            ✓ Reduced content production cycles by ~40% · Scalable across any Web3 client
+          </div>
+        </div>
+        <div class="project-visual">
+          <div class="terminal-line">
+            <span class="prompt">$</span>
+            <span class="cmd"> run_chain --persona "Base ecosystem"</span>
+          </div>
+          <div class="terminal-line">
+            <span class="out">→ Loading persona protocols...</span>
+          </div>
+          <div class="terminal-line">
+            <span class="out">→ Injecting quality constraints...</span>
+          </div>
+          <div class="terminal-line">
+            <span class="out">→ Chain step 1/4: Research synthesis</span>
+          </div>
+          <div class="terminal-line">
+            <span class="out">→ Chain step 2/4: Angle extraction</span>
+          </div>
+          <div class="terminal-line">
+            <span class="out">→ Chain step 3/4: Draft generation</span>
+          </div>
+          <div class="terminal-line">
+            <span class="out">→ Chain step 4/4: QA review pass</span>
+          </div>
+          <div class="terminal-line">
+            <span class="prompt">✓</span>
+            <span class="val"> Output ready. Score: 94/100</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- PROJECT 2 -->
+      <div class="project-card">
+        <div class="project-icon">📲</div>
+        <span class="project-tag">AUTOMATION · SAAS PRODUCT</span>
+        <h3 class="project-title">Missed Call Text-Back System</h3>
+        <p class="project-desc">
+          End-to-end AI automation product — when a business misses a call, the system automatically sends a personalised SMS. Built on Twilio + Make.com, packaged with full SOPs and a three-tier pricing structure for the Lagos market.
+        </p>
+        <div class="project-stack">
+          <span class="chip green">Make.com</span>
+          <span class="chip green">Twilio</span>
+          <span class="chip accent">AI Automation</span>
+          <span class="chip">Naira Pricing Tiers</span>
+        </div>
+        <div class="project-outcome">
+          ✓ Packaged as a sellable service · First AI product for Lagos market
+        </div>
+      </div>
+
+      <!-- PROJECT 3 -->
+      <div class="project-card">
+        <div class="project-icon">🔬</div>
+        <span class="project-tag">RESEARCH ENGINE · WEB3</span>
+        <h3 class="project-title">Blockchain Research Pipeline</h3>
+        <p class="project-desc">
+          Prompt-driven deep-dive research workflow producing structured, fact-verified protocol analysis reports. Covered 9+ ecosystems including Allora, MegaETH, Novastro, Mitosis, OpenLedger, Caldera, Sapien, and Newton Protocol.
+        </p>
+        <div class="project-stack">
+          <span class="chip accent">LLM Research Synthesis</span>
+          <span class="chip">Multi-Source Verification</span>
+          <span class="chip green">9+ Protocols</span>
+          <span class="chip">Structured Output</span>
+        </div>
+        <div class="project-outcome">
+          ✓ Publication-ready reports delivered for each protocol analysed
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- SKILLS -->
+<section id="skills">
+  <div class="container">
+    <span class="section-tag">// CAPABILITIES</span>
+    <h2 class="section-title">What I Bring</h2>
+    <p class="section-desc">Prompt engineering is the core. Everything else is the system around it.</p>
+
+    <div class="skills-grid">
+      <div class="skill-card">
+        <div class="skill-icon">✦</div>
+        <div class="skill-name">Prompt Engineering</div>
+        <div class="skill-desc">Chain prompting, persona injection, structured output formatting, iterative refinement, ambiguity reduction, and QA-layer design.</div>
+      </div>
+      <div class="skill-card">
+        <div class="skill-icon">⚡</div>
+        <div class="skill-name">Workflow Automation</div>
+        <div class="skill-desc">End-to-end automation pipelines using Make.com and Twilio. From trigger to output — zero manual steps.</div>
+      </div>
+      <div class="skill-card">
+        <div class="skill-icon">🌐</div>
+        <div class="skill-name">Web3 & Blockchain</div>
+        <div class="skill-desc">Deep familiarity with Base, DeFi protocols, NFT ecosystems, community operations, and the Kaito InfoFi layer.</div>
+      </div>
+      <div class="skill-card">
+        <div class="skill-icon">🔍</div>
+        <div class="skill-name">AI Research Workflows</div>
+        <div class="skill-desc">Multi-source fact verification, LLM-assisted synthesis, structured summarisation, and output QA before final delivery.</div>
+      </div>
+      <div class="skill-card">
+        <div class="skill-icon">📐</div>
+        <div class="skill-name">Technical Writing & Docs</div>
+        <div class="skill-desc">SOP documentation, AI workflow guides, protocol research reports, and clear messaging for technical and non-technical audiences.</div>
+      </div>
+      <div class="skill-card">
+        <div class="skill-icon">🎨</div>
+        <div class="skill-name">Content Production</div>
+        <div class="skill-desc">AI-assisted content pipelines using Canva, Notion, and structured prompt systems for social media, research, and brand content.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- EXPERIENCE -->
+<section id="experience">
+  <div class="container">
+    <span class="section-tag">// EXPERIENCE</span>
+    <h2 class="section-title">Work History</h2>
+    <p class="section-desc">4+ years building at the intersection of AI, Web3, and operations.</p>
+
+    <div class="timeline">
+      <div class="timeline-item">
+        <div class="timeline-date">2023 — PRESENT</div>
+        <div class="timeline-role">Prompt Engineer & AI Content Architect</div>
+        <div class="timeline-company">Independent · Web3 Clients · Remote</div>
+        <ul class="timeline-points">
+          <li>Designed the Web3 Content Production System — a full Claude-powered prompt architecture with chain workflows, tested live on Base blockchain</li>
+          <li>Built the Missed Call Text-Back System on Twilio + Make.com and packaged it as a commercialised AI service product</li>
+          <li>Engineered multi-step prompt sequences for blockchain protocol research across 9+ ecosystems</li>
+          <li>Documented all AI workflows and SOPs to enable repeatable, scalable prompt-driven production</li>
+        </ul>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-date">JAN 2022 — PRESENT</div>
+        <div class="timeline-role">IT Support Specialist</div>
+        <div class="timeline-company">Naitin Visuals & Graphics · Lagos</div>
+        <ul class="timeline-points">
+          <li>Contributed to blockchain-based provenance tracking application development support</li>
+          <li>Streamlined project workflows, improving team efficiency by 25%</li>
+        </ul>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-date">MAR 2021 — DEC 2022</div>
+        <div class="timeline-role">Web3 Community & Operations Manager</div>
+        <div class="timeline-company">Regulated NFT · Remote</div>
+        <ul class="timeline-points">
+          <li>Structured complex protocol updates into clear, digestible community communications</li>
+          <li>Verified technical claims and market information through rigorous multi-source research</li>
+          <li>Enhanced project success rates by 10% through cross-functional collaboration</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="container">
+    <div class="contact-section">
+      <h2 class="contact-title">Let's Build Something Together</h2>
+      <p class="contact-sub">Open to remote prompt engineering, AI automation, and Web3 content roles globally.</p>
+      <div class="contact-links">
+        <a href="https://linkedin.com/in/iro-njoku-lawrence-18767088" target="_blank" class="contact-chip">
+          ↗ LinkedIn
+        </a>
+        <a href="/cdn-cgi/l/email-protection#fb928994959194908e979a8cbb9c969a9297d5989496" class="contact-chip">
+          ✉ ironjokulaw@gmail.com
+        </a>
+        <a href="https://x.com/unbr0kenog" target="_blank" class="contact-chip">
+          𝕏 @unbr0kenog
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<div class="container">
+  <footer>
+    <span>© 2026 IRO-NJOKU LAWRENCE</span>
+    <span>LAGOS, NIGERIA · AVAILABLE GLOBALLY</span>
+  </footer>
+</div>
+
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+  // Intersection Observer for scroll animations
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry, i) => {
+      if (entry.isIntersecting) {
+        const delay = entry.target.dataset.delay || 0;
+        setTimeout(() => {
+          entry.target.classList.add('visible');
+        }, parseInt(delay));
+      }
+    });
+  }, { threshold: 0.1 });
+
+  document.querySelectorAll('.stat, .project-card, .skill-card, .timeline-item').forEach(el => {
+    observer.observe(el);
+  });
+
+  // Stagger skill cards
+  document.querySelectorAll('.skill-c
